@@ -1,27 +1,42 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { singUp } from "./api";
-//cross origin resource sharing hatasını incele
-//<button disabled={password !== passwordRepeat}>Sing Up</button>
-//password&& password !== passwordRepeat yani şifre yoksa veya şifre ler aynı değilse disable olsun anlamını verececek
-//burada şifre ve tekrar girilen şifre eşit olursa buton aktif olsun dedik
-//const [apiProgress, setApiProgress] = useState(false);
-//bu kodda ise sign up tuşuna birden kez basarak aynı şeyi döndürmemeye yaradı ayrıca buton tuşuna da bu değeri atayarak yaptık
-// apiProgress && <span
-//className="spinner-border spinner-border-sm"
-//aria-hidden="true"
-//></span>} bu kodda ise apiProgress && yani doğru ise butonu çalıştır dönerek anlamını verecek
+import { Input } from "./components/input";
 
 export function SingUp() {
-  const [username, setUsername] = useState(); //bir değeri tutatbilme ve o değerdeki değişimlere componentennin reaksiyon göstermesine yarar
+  const [username, setUsername] = useState();
   const [email, setEmail] = useState();
-  const [password, SetPassword] = useState();
-  const [passwordRepeat, SetPasswordRepeat] = useState();
+  const [password, setPassword] = useState();
+  const [passwordRepeat, setPasswordRepeat] = useState();
   const [apiProgress, setApiProgress] = useState(false);
   const [successMessage, setSuccessMessage] = useState();
+  const [errors, setErrors] = useState({});
+  const [generalError, setGeneralError] = useState();
+
+  useEffect(() => {
+    setErrors((lastErrors) => ({
+      ...lastErrors,
+      username: undefined,
+    }));
+  }, [username]);
+
+  useEffect(() => {
+    setErrors((lastErrors) => ({
+      ...lastErrors,
+      email: undefined,
+    }));
+  }, [email]);
+
+  useEffect(() => {
+    setErrors((lastErrors) => ({
+      ...lastErrors,
+      password: undefined,
+    }));
+  }, [password]);
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    setSuccessMessage(); // bu kod ise kullanıcı oluşturulduğunda create yazısını gidermeye yarıyor
+    setSuccessMessage();
+    setGeneralError();
     setApiProgress(true);
 
     try {
@@ -29,16 +44,30 @@ export function SingUp() {
         username,
         email,
         password,
-        //keyler bunlar,proportyler
       });
       setSuccessMessage(response.data.message);
-    } catch {
-      /** */
+    } catch (axiosError) {
+      if (
+        axiosError.response?.data &&
+        axiosError.response.data.status === 400
+      ) {
+        setErrors(axiosError.response.data.validationErrors);
+      } else {
+        setGeneralError("Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin");
+      }
     } finally {
       setApiProgress(false);
     }
   };
-  //formm onSubmit işleminde mousla tıklamadan enter ile tıklanabilir
+
+  const passwordRepeatError = useMemo(() => {
+    if (password && password !== passwordRepeat) {
+      console.log("always running");
+      return "Şifreler arasında uyuşmazlık var";
+    }
+    return "";
+  }, [password, passwordRepeat]);
+
   return (
     <div className="container">
       <div className="col-lg-6 offset-lg-3 col-sm-8 offset-sm-2">
@@ -47,53 +76,38 @@ export function SingUp() {
             <h1>Sing Up</h1>
           </div>
           <div className="card-body">
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label">
-                Username
-              </label>
-              <input
-                id="username"
-                className="form-control"
-                onChange={(event) => setUsername(event.target.value)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                Email
-              </label>
-              <input
-                id="email"
-                className="form-control"
-                onChange={(event) => setEmail(event.target.value)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                className="form-control"
-                onChange={(event) => SetPassword(event.target.value)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="passwordRepeat" className="form-label">
-                {" "}
-                Password Repeat
-              </label>
-              <input
-                id="passwordRepeat"
-                type="password"
-                className="form-control"
-                onChange={(event) => SetPasswordRepeat(event.target.value)}
-              />
-            </div>
+            <Input
+              id="username"
+              label="Username"
+              error={errors.username}
+              onChange={(event) => setUsername(event.target.value)}
+            />
+            <Input
+              id="email"
+              label="E-mail"
+              error={errors.email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+            <Input
+              id="password"
+              label="Password"
+              error={errors.password}
+              onChange={(event) => setPassword(event.target.value)}
+              type="password"
+            />
+            <Input
+              id="passwordRepeat"
+              label="Password Repeat"
+              error={passwordRepeatError}
+              onChange={(event) => setPasswordRepeat(event.target.value)}
+              type="password"
+            />
             {successMessage && (
               <div className="alert alert-success">{successMessage}</div>
             )}
-
+            {generalError && (
+              <div className="alert alert-danger">{generalError}</div>
+            )}
             <div className="text-center">
               <button
                 className="btn btn-primary"
@@ -116,3 +130,49 @@ export function SingUp() {
     </div>
   );
 }
+
+//{
+//   <div className="mb-3">
+//  <label htmlFor="username" className="form-label">
+//  Username
+//</label>
+//<input
+//  id="username"
+//className={
+//errors.username ? "form-control is-invalid" : "form-control"
+//}
+//onChange={
+//(event) => setUsername(event.target.value)
+//       setErrors({});//burada ise editleme yaparken username olan boşluğu temizledi // bu birinci yöntem diğer bir hook daha var
+//} //setUsername(event.target.value)} bu durumda username cannot ifadesi kalır formu editlemeye başlayıncada gitmez bunun için şimdi editlerken gitmesini sağlayacağız
+///>
+//<div className="invalid-feedback">{errors.username}</div>
+//</div>
+//}{" "}
+/**
+ *  <div className="mb-3">
+              <label htmlFor="email" className="form-label">
+                Email
+              </label>
+              <input
+                id="email"
+                className="form-control"
+                onChange={(event) => setEmail(event.target.value)}
+              />
+            </div>
+ */
+
+{
+  /* <div className="mb-3">
+              <label htmlFor="password" className="form-label">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                className="form-control"
+                onChange={(event) => setPassword(event.target.value)}
+              />
+            </div> */
+}
+//* <div className="mb-3">
