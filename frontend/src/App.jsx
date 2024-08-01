@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import { Link, Outlet } from "react-router-dom";
+import logo from "./assets/resim1.jpg";
+import { LanguageSelector } from "./shared/components/LanguageSelector";
+import { useTranslation } from "react-i18next";
 function App() {
-  const [count, setCount] = useState(0)
-
+  const { t } = useTranslation();
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <nav className="navbar navbar-expand bg-body-tertiary shadow-sm">
+        <div className="container-fluid d-flex align-items-center">
+          <Link className="navbar-brand d-flex align-items-center" to="/">
+            <img src={logo} width={80} alt="Logo" />
+            <div
+              style={{
+                fontSize: "50px",
+                fontWeight: "500",
+                marginLeft: "10px",
+              }}
+            >
+              ERKA
+            </div>
+          </Link>
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <div style={{ fontSize: "24px", fontWeight: "bold" }}>
+                <Link className="nav-link" to="/signup">
+                  {t("signUp")}
+                </Link>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div className="container mt-3">
+        <Outlet />
+        <LanguageSelector />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
