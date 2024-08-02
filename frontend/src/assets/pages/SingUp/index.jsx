@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { singUp } from "./api";
 import { Input } from "./components/input";
 import { useTranslation } from "react-i18next";
+import { Alert } from "@/shared/components/Alert";
+import { Spinner } from "@/shared/components/Spinner";
 
 export function SingUp() {
   const [username, setUsername] = useState();
@@ -104,12 +106,9 @@ export function SingUp() {
               onChange={(event) => setPasswordRepeat(event.target.value)}
               type="password"
             />
-            {successMessage && (
-              <div className="alert alert-success">{successMessage}</div>
-            )}
-            {generalError && (
-              <div className="alert alert-danger">{generalError}</div>
-            )}
+            {successMessage && <Alert>{successMessage}</Alert>}
+
+            {generalError && <Alert styleType="danger">{generalError}</Alert>}
             <div className="text-center">
               <button
                 className="btn btn-primary"
@@ -117,12 +116,7 @@ export function SingUp() {
                   apiProgress || !password || password !== passwordRepeat
                 }
               >
-                {apiProgress && (
-                  <span
-                    className="spinner-border spinner-border-sm"
-                    aria-hidden="true"
-                  ></span>
-                )}
+                {apiProgress && <Spinner sm={true} />}
                 {t("signUp")}
               </button>
             </div>
