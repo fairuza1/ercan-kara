@@ -1,5 +1,4 @@
-import http from "../../../lib/http";
-
+import http from "@/lib/http";
 
 
 export function singUp(body) {

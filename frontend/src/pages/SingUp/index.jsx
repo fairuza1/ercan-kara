@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { singUp } from "./api";
-import { Input } from "./components/input";
+import { Input } from "../SingUp/components/input";
 import { useTranslation } from "react-i18next";
 import { Alert } from "@/shared/components/Alert";
 import { Spinner } from "@/shared/components/Spinner";
-
 export function SingUp() {
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();

@@ -1,10 +1,9 @@
-import { createBrowserRouter} from "react-router-dom";
+import {createBrowserRouter } from "react-router-dom";
 
-import { Home } from "../assets/pages/SingUp/Home";
-import { SingUp } from "../assets/pages/SingUp";
-import App from "../App";
-import { Activation } from "../assets/pages/SingUp/Activation";
-
+import { Home } from "@/pages/Home";
+import { SingUp } from "../pages/SingUp";
+import App from "@/App";
+import { Activation } from "@/pages/Activation";
 export default  createBrowserRouter([
     {
         path: "/",
