@@ -39,7 +39,7 @@ export function Activation() {
         </Alert>
       )}
       {successMessage && <Alert>{successMessage}</Alert>}
-      {errorMessage && <Alert styleType="primary"> {errorMessage}</Alert>}
+      {errorMessage && <Alert styleType="danger"> {errorMessage}</Alert>}
     </>
   );
 }
