@@ -1,42 +1,40 @@
 import { useCallback, useEffect, useState } from "react";
 import { loadUsers } from "./api";
 import { Spinner } from "@/shared/components/Spinner";
+import { UserListItem } from "./UserListItem";
 
 export function UserList() {
   const [userPage, setUserPage] = useState({
     content: [],
     last: false,
-    first: false,
+    first: true, // İlk sayfa başladığında "first" true olmalı
     number: 0,
   });
   const [apiProgress, setApiProgress] = useState(false);
-  const getUsers = useCallback(async (page) => {
+
+  const getUsers = useCallback(async (page = 0) => {
     setApiProgress(true);
     try {
       const response = await loadUsers(page);
       setUserPage(response.data);
     } catch {
+      // Hata işleme kısmını da ekleyebilirsiniz
     } finally {
       setApiProgress(false);
     }
   }, []);
 
   useEffect(() => {
-    //component uygulama geldiğinde getusers çağırıyor get de loadusers çağırıyor
     getUsers();
-  }, []);
+  }, [getUsers]); // getUsers bağımlılığı eklendi
 
   return (
     <div className="card">
       <div className="card-header text-center fs-4">User List</div>
       <ul className="list-group list-group-flush">
-        {userPage.content.map((user) => {
-          return (
-            <li className="list-group-item list-group-item-action">
-              {user.username}
-            </li>
-          );
-        })}
+        {userPage.content.map((user) => (
+          <UserListItem key={user.id} user={user} /> // Anahtar eklendi
+        ))}
       </ul>
       <div className="card-footer text-center">
         {apiProgress && <Spinner />}
