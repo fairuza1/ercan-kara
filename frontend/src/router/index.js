@@ -5,6 +5,7 @@ import { SingUp } from "../pages/SingUp";
 import App from "@/App";
 import { Activation } from "@/pages/Activation";
 import { User } from "@/pages/User";
+import { Login } from "@/pages/Login";
 
 export default  createBrowserRouter([
     {
@@ -27,6 +28,11 @@ export default  createBrowserRouter([
             {
               path: "/user/:id",
               Component :User,
+            },
+            {
+              path:"/login",
+              Component:Login,
+
             }
         ]
     }

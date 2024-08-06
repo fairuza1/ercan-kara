@@ -23,6 +23,13 @@ export function Navbar() {
         <ul className="navbar-nav">
           <li className="nav-item">
             <div style={{ fontSize: "24px", fontWeight: "bold" }}>
+              <Link className="nav-link" to="/Login">
+                {t("login")}
+              </Link>
+            </div>
+          </li>
+          <li className="nav-item">
+            <div style={{ fontSize: "24px", fontWeight: "bold" }}>
               <Link className="nav-link" to="/signup">
                 {t("signUp")}
               </Link>

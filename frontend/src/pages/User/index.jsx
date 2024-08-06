@@ -1,6 +1,6 @@
 import { getUser } from "./api";
 import { Alert } from "@/shared/components/Alert";
-import { useRouteParamApiRequest } from "@/shared/components/hooks/useRouteParamApiRequest";
+import { useRouteParamApiRequest } from "@/shared/hooks/useRouteParamApiRequest";
 import { Spinner } from "@/shared/components/Spinner";
 import { ProfileCard } from "./components/ProfileCard";
 
