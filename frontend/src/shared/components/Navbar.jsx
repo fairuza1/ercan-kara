@@ -2,8 +2,16 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import logo from "@/assets/resim1.jpg";
 
+import { useAuthDispatch, useAuthState } from "../state/context";
+
 export function Navbar() {
   const { t } = useTranslation();
+  const authState = useAuthState();
+  const dispatch = useAuthDispatch();
+
+  const onClickLogout = () => {
+    dispatch({ type: "logout-success" });
+  };
 
   return (
     <nav className="navbar navbar-expand bg-body-tertiary shadow-sm">
@@ -21,20 +29,45 @@ export function Navbar() {
           </div>
         </Link>
         <ul className="navbar-nav">
-          <li className="nav-item">
-            <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-              <Link className="nav-link" to="/Login">
-                {t("login")}
-              </Link>
-            </div>
-          </li>
-          <li className="nav-item">
-            <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-              <Link className="nav-link" to="/signup">
-                {t("signUp")}
-              </Link>
-            </div>
-          </li>
+          {authState.id === 0 && (
+            <>
+              <li className="nav-item">
+                <div style={{ fontSize: "24px", fontWeight: "bold" }}>
+                  <Link className="nav-link" to="/Login">
+                    {t("login")}
+                  </Link>
+                </div>
+              </li>
+              <li className="nav-item">
+                <div style={{ fontSize: "24px", fontWeight: "bold" }}>
+                  <Link className="nav-link" to="/signup">
+                    {t("signUp")}
+                  </Link>
+                </div>
+              </li>
+            </>
+          )}
+          {authState.id > 0 && (
+            <>
+              <li className="nav-item">
+                <div style={{ fontSize: "24px", fontWeight: "bold" }}>
+                  <Link className="nav-link" to={`/user/${authState.id}`}>
+                    My Profile
+                  </Link>
+                </div>
+              </li>
+              <li className="nav-item">
+                <div
+                  className="nav-link"
+                  role="button"
+                  onClick={onClickLogout}
+                  style={{ fontSize: "24px", fontWeight: "bold" }}
+                >
+                  Logout
+                </div>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </nav>
